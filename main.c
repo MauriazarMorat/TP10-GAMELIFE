@@ -9,7 +9,7 @@
 3. Saltar de estos modos de forma compatible y con una buena experiencia de usuario.
 4. Propuesta grafica, mediante la implementacion de emojis, y una tecnica, se logro un buen resultado grafico.
 
-Hemos disfrutado mucho de hacer este TP. Espero que disfrute de nuestro trabajo.
+Aqui comienza una nueva era.
 
 */
 
