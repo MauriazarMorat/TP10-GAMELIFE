@@ -45,8 +45,7 @@ int ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionAct
 
 // ------------ MAIN ------------- //
 
-int main (void)
-{
+int main (void){
     int i; // Contador para for.
     int mundo[ALTO][ANCHO]; // Creamos la matriz mundo, que sera la principal.
     int mundoInicial[ALTO][ANCHO]; // Creamos una matriz auxiliar que guardara la generacion 0.
