@@ -1,15 +1,8 @@
+// ---------- LIBRERIAS ---------- //
+
 #include <stdio.h>
-
-/*
-
---- FUNCIONALIDADES EXTRA ---
-
-1. Modo "editor", permite poner y sacar celulas mediante un cursor, evitando el hardcoding.
-2. Modo "salto a generacion especifica", permite saltar hacer un calculo matematico recurente de la condicion de la generacion exacta pedida.
-3. Saltar de estos modos de forma compatible y con una buena experiencia de usuario.
-4. Propuesta grafica, mediante la implementacion de emojis, y una tecnica, se logro un buen resultado grafico.
-
-*/
+#include "front.h"
+#include <allegro5/allegro.h>
 
 // ---------- CONSTANTES ---------- //
 
@@ -49,6 +42,16 @@ int main (void){
     int mundoInicial[ALTO][ANCHO]; // Creamos una matriz auxiliar que guardara la generacion 0.
     int input = 0;
     int generacion = 0;
+
+	if (iniciar_front() != 0)
+	{
+		printf("Error al iniciar Allegro\n");
+		return 1;
+	}
+
+	al_rest(3.0);
+
+	cerrar_front();
 
     rellenar_mundo(mundoInicial);
     rellenar_mundo(mundo); // Inicializa el mundo con celulas muertas. (Rellena la matriz con 0s).
