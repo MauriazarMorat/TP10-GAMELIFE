@@ -1,1 +1,4 @@
 /Debug/
+.vscode/settings.json
+.vscode/tasks.json
+juego.exe

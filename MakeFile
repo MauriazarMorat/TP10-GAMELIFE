@@ -1,0 +1,11 @@
+CC = gcc
+
+LIBS = $(shell pkg-config --cflags --libs allegro-5 allegro_primitives-5)
+
+juego.exe: src/main.c src/front.c src/front.h
+	$(CC) src/main.c src/front.c -o juego.exe $(LIBS)
+
+run: juego.exe
+	./juego.exe
+
+.PHONY: run
