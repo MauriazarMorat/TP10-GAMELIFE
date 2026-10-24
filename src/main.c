@@ -6,9 +6,6 @@
 
 // ---------- CONSTANTES ---------- //
 
-#define ALTO 20
-#define ANCHO 20
-
 #define NORMAL_INPUT_CONFIG 1
 #define SALTO_GENERACION_INPUT_CONFIG 0
 
@@ -36,22 +33,13 @@ int ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionAct
 
 // ------------ MAIN ------------- //
 
-int main (void){
+int main (void)
+{
     int i; // Contador para for.
     int mundo[ALTO][ANCHO]; // Creamos la matriz mundo, que sera la principal.
     int mundoInicial[ALTO][ANCHO]; // Creamos una matriz auxiliar que guardara la generacion 0.
     int input = 0;
     int generacion = 0;
-
-	if (iniciar_front() != 0)
-	{
-		printf("Error al iniciar Allegro\n");
-		return 1;
-	}
-
-	al_rest(3.0);
-
-	cerrar_front();
 
     rellenar_mundo(mundoInicial);
     rellenar_mundo(mundo); // Inicializa el mundo con celulas muertas. (Rellena la matriz con 0s).
@@ -65,7 +53,7 @@ int main (void){
     mundoInicial[3][3] = 1;
 
     copiar_mundo(mundo, mundoInicial);
-    print_mundo(mundo, 0, 0, 0);
+	print_mundo(mundo, 0, 0, 0);
 
     /* Bucle principal del programa. */
 
