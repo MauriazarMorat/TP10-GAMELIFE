@@ -1,25 +1,26 @@
 // ---------- LIBRERIAS ---------- //
 
 #include "back.h"
-
+#include <stdio.h>
 // ---------- FUNCIONES ---------- //
 
-/* Limpia el buffer de caracteres ejecutando la función getchar hasta detectar un enter. */
 
 void limpiar_buffer (void)
 {
+	/* Limpia el buffer de caracteres ejecutando la función getchar hasta detectar un enter. */
+
 	int c;
     	while ((c = getchar()) != '\n')
     	{}
 }
 
-/* Por medio de getchar, detecta números naturales ingresados por el usuario y los returna en forma de int.
-Tambien detecta inputs especiales tales como Enter, 'q' y 'p' y retorna -1 si se ingresa un input invalido
-(Números no naturales o caracteres aleatorios). Ademas, dependiendo de la configuracion de donde es llamada
-la funcion, tiene algunas funcionalidades que se adapta al programa*/
-
-int input_usuario (int configuracionInput)
+int  input_usuario (int configuracionInput)
 {
+	/* Por medio de getchar, detecta números naturales ingresados por el usuario y los returna en forma de int.
+	Tambien detecta inputs especiales tales como Enter, 'q' y 'p' y retorna -1 si se ingresa un input invalido
+	(Números no naturales o caracteres aleatorios). Ademas, dependiendo de la configuracion de donde es llamada
+	la funcion, tiene algunas funcionalidades que se adapta al programa*/
+
 	int numInvalido = 0;
     	int c;
     	int num = 0;
@@ -106,10 +107,10 @@ int input_usuario (int configuracionInput)
 	return num;
 }
 
-/* Inicializa el mundo con celulas muertas, recorre todas las posiciones de la matriz y les asigna un valor de 0.*/
-
 void rellenar_mundo (int matriz [ALTO][ANCHO])
 {
+	/* Inicializa el mundo con celulas muertas, recorre todas las posiciones de la matriz y les asigna un valor de 0.*/
+
     int i, j;
 
     for (i = 0; i < ALTO; i++)
@@ -121,12 +122,12 @@ void rellenar_mundo (int matriz [ALTO][ANCHO])
     }
 }
 
-/* Cuenta la cantidad de celulas vivas que rodean a una celula determinada.
-Recorre las 8 posiciones vecinas a la celula, verificando primero que
-cada posicion se encuentre dentro de los limites del mundo. */
-
-int contar_vecinos (int matriz [ALTO][ANCHO], int y, int x)
+int  contar_vecinos (int matriz [ALTO][ANCHO], int y, int x)
 {
+	/* Cuenta la cantidad de celulas vivas que rodean a una celula determinada.
+	Recorre las 8 posiciones vecinas a la celula, verificando primero que
+	cada posicion se encuentre dentro de los limites del mundo. */
+
 	int vecinos = 0;
     	int i,j;
 
@@ -154,11 +155,11 @@ int contar_vecinos (int matriz [ALTO][ANCHO], int y, int x)
     	return vecinos;
 }
 
-/* Se encarga de actualizar el estado de cada celula en el mundo siguiendo las reglas del juego de la vida de Conway.
-Para esto primero actualiza el mundo en una matriz aparte para que los cambios no interfieran en el estado de otras celulas. */
-
 void actualizar_mundo (int matriz[ALTO][ANCHO])
 {
+	/* Se encarga de actualizar el estado de cada celula en el mundo siguiendo las reglas del juego de la vida de Conway.
+	Para esto primero actualiza el mundo en una matriz aparte para que los cambios no interfieran en el estado de otras celulas. */
+
 	int i,j;
 	int cant_vecinos;
 	int sig_mundo[ALTO][ANCHO];
@@ -187,11 +188,11 @@ void actualizar_mundo (int matriz[ALTO][ANCHO])
    	copiar_mundo(matriz, sig_mundo);
 }
 
-/* Esta funcion imprime la pantalla usando caracteres UNICODE (especificamente emojis de rectangulos de colores).
-A modo de funcionalidad extra, tambien muestra el cursor para modo editor, si es que el modo esta activo. */
-
 void print_mundo (int matriz [ALTO][ANCHO], int editor, int yCursor, int xCursor)
 {
+	/* Esta funcion imprime la pantalla usando caracteres UNICODE (especificamente emojis de rectangulos de colores).
+	A modo de funcionalidad extra, tambien muestra el cursor para modo editor, si es que el modo esta activo. */
+
 	int i, j;
 
     	/* El grupo conocia la existencia de system("cls") sin embargo, eso es una funcionalidad de Windows.
@@ -236,11 +237,11 @@ void print_mundo (int matriz [ALTO][ANCHO], int editor, int yCursor, int xCursor
     }
 }
 
-/* Esta funcion se encarga de hacer el loop completo de la funcionalidad del modo editor.
-Permite que no sea hardcodeado el ingreso de nuevas celulas, asi tambien la posiblidad de quitarlas.*/
-
 void estado_editor(int matriz [ALTO][ANCHO])
 {
+	/* Esta funcion se encarga de hacer el loop completo de la funcionalidad del modo editor.
+	Permite que no sea hardcodeado el ingreso de nuevas celulas, asi tambien la posiblidad de quitarlas.*/
+
 	int yCursor = 0;
 	int xCursor = 0;
 	int c = 0;
@@ -294,10 +295,11 @@ void estado_editor(int matriz [ALTO][ANCHO])
 	    } while (c != 'q');
 }
 
-/* Hace el calculo recursivo para saltar a la generacion especifica. Notese como se distingue si es la generacion pedida es previa o posterior a la actual.
-En base a eso, se trata de optimizar, el punto de arranque.*/
+int  ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionActual, int mundoActual[ALTO][ANCHO], int mundoInicial[ALTO][ANCHO])
+{
+	/* Hace el calculo recursivo para saltar a la generacion especifica. Notese como se distingue si es la generacion pedida es previa o posterior a la actual.
+	En base a eso, se trata de optimizar, el punto de arranque.*/
 
-int ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionActual, int mundoActual[ALTO][ANCHO], int mundoInicial[ALTO][ANCHO]){
 	int i = 0;
 
 	if (generacionTarget > generacionActual)
@@ -329,9 +331,10 @@ int ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionAct
 	return generacionTarget;
 }
 
-/* Una funcion de ayuda para poder igualar el mundo y mundo inicial (y viceversa) */
+void copiar_mundo(int mundo[ALTO][ANCHO], int mundoToCopy[ALTO][ANCHO])
+{
+	/* Una funcion de ayuda para poder igualar el mundo y mundo inicial (y viceversa) */
 
-void copiar_mundo(int mundo[ALTO][ANCHO], int mundoToCopy[ALTO][ANCHO]){
 	int y;
 	int x;
 
@@ -344,10 +347,10 @@ void copiar_mundo(int mundo[ALTO][ANCHO], int mundoToCopy[ALTO][ANCHO]){
 	}
 }
 
-/* La funcion encargada de saltar a una generacion especifica. */
-
-int estado_saltar_generacion_especifica(int generacionIngresante, int mundoActual[ALTO][ANCHO], int mundoInicial[ALTO][ANCHO])
+int  estado_saltar_generacion_especifica(int generacionIngresante, int mundoActual[ALTO][ANCHO], int mundoInicial[ALTO][ANCHO])
 {
+	/* La funcion encargada de saltar a una generacion especifica. */
+
 	int input = generacionIngresante;
 	int generacion = generacionIngresante;
 	int generacionPrevia = generacionIngresante;
