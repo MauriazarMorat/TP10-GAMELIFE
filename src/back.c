@@ -2,8 +2,8 @@
 
 #include "back.h"
 #include <stdio.h>
-// ---------- FUNCIONES ---------- //
 
+// ---------- FUNCIONES ---------- //
 
 void limpiar_buffer (void)
 {

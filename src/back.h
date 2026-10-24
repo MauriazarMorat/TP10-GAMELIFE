@@ -1,7 +1,8 @@
 #ifndef BACK_H
 #define BACK_H
 
-//Defines
+// Defines
+
 #define NORMAL_INPUT_CONFIG 1
 #define SALTO_GENERACION_INPUT_CONFIG 0
 #include "constant.h"
@@ -12,7 +13,8 @@
 #warning Dados los valores de C_alto y C_ancho elejidos puede que la salida sea dificil de ver.
 #endif
 
-//Prototipos
+// Prototipos
+
 void limpiar_buffer (void);
 int  input_usuario (int configuracionInput);
 void rellenar_mundo (int matriz [C_alto][C_ancho]);
@@ -23,6 +25,5 @@ void estado_editor(int matriz [C_alto][C_ancho]);
 int  ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionActual, int mundoActual[C_alto][C_ancho], int mundoInicial[C_alto][C_ancho]);
 void copiar_mundo(int mundo[C_alto][C_ancho], int mundoToCopy[C_alto][C_ancho]);
 int  estado_saltar_generacion_especifica(int generacionIngresante, int mundoActual[C_alto][C_ancho], int mundoInicial[C_alto][C_ancho]);
-
 
 #endif
