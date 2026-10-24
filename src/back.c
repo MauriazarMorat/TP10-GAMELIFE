@@ -107,22 +107,22 @@ int  input_usuario (int configuracionInput)
 	return num;
 }
 
-void rellenar_mundo (int matriz [ALTO][ANCHO])
+void rellenar_mundo (int matriz [C_alto][C_ancho])
 {
 	/* Inicializa el mundo con celulas muertas, recorre todas las posiciones de la matriz y les asigna un valor de 0.*/
 
     int i, j;
 
-    for (i = 0; i < ALTO; i++)
+    for (i = 0; i < C_alto; i++)
     {
-        for (j = 0; j < ANCHO; j++)
+        for (j = 0; j < C_ancho; j++)
         {
             matriz[i][j] = 0;
         }
     }
 }
 
-int  contar_vecinos (int matriz [ALTO][ANCHO], int y, int x)
+int  contar_vecinos (int matriz [C_alto][C_ancho], int y, int x)
 {
 	/* Cuenta la cantidad de celulas vivas que rodean a una celula determinada.
 	Recorre las 8 posiciones vecinas a la celula, verificando primero que
@@ -139,7 +139,7 @@ int  contar_vecinos (int matriz [ALTO][ANCHO], int y, int x)
 
         	for (j = x - 1; j <= x + 1; j++)
         	{
-            		if (i >= 0 && i < ALTO && j >= 0 && j < ANCHO)
+            		if (i >= 0 && i < C_alto && j >= 0 && j < C_ancho)
             		{
             			/* Si la posicion contiene una celula viva y no es la propia celula
                		    a analizar, se incrementa el contador de vecinos. */
@@ -155,20 +155,20 @@ int  contar_vecinos (int matriz [ALTO][ANCHO], int y, int x)
     	return vecinos;
 }
 
-void actualizar_mundo (int matriz[ALTO][ANCHO])
+void actualizar_mundo (int matriz[C_alto][C_ancho])
 {
 	/* Se encarga de actualizar el estado de cada celula en el mundo siguiendo las reglas del juego de la vida de Conway.
 	Para esto primero actualiza el mundo en una matriz aparte para que los cambios no interfieran en el estado de otras celulas. */
 
 	int i,j;
 	int cant_vecinos;
-	int sig_mundo[ALTO][ANCHO];
+	int sig_mundo[C_alto][C_ancho];
 
 	/* Recorre todas las posiciones del mundo y llama a la función "contar_vecinos" para cada celula. */
 
-	for (i = 0; i < ALTO; i++)
+	for (i = 0; i < C_alto; i++)
 	{
-		for (j = 0; j < ANCHO; j++)
+		for (j = 0; j < C_ancho; j++)
 		{
 
 			/* Aplicamos las reglas del juego de la vida. */
@@ -188,7 +188,7 @@ void actualizar_mundo (int matriz[ALTO][ANCHO])
    	copiar_mundo(matriz, sig_mundo);
 }
 
-void print_mundo (int matriz [ALTO][ANCHO], int editor, int yCursor, int xCursor)
+void print_mundo (int matriz [C_alto][C_ancho], int editor, int yCursor, int xCursor)
 {
 	/* Esta funcion imprime la pantalla usando caracteres UNICODE (especificamente emojis de rectangulos de colores).
 	A modo de funcionalidad extra, tambien muestra el cursor para modo editor, si es que el modo esta activo. */
@@ -208,9 +208,9 @@ void print_mundo (int matriz [ALTO][ANCHO], int editor, int yCursor, int xCursor
 
     	/* Ponemos en pantalla el estado de cada celda usando emojis. Si estamos en modo editor, mostramos el cursor. */
 
-    	for (i = 0; i < ALTO; i++)
+    	for (i = 0; i < C_alto; i++)
     	{
-            for (j = 0; j < ANCHO; j++)
+            for (j = 0; j < C_ancho; j++)
             {
                 if (editor == 1 && i == yCursor && j == xCursor)
                 {
@@ -237,7 +237,7 @@ void print_mundo (int matriz [ALTO][ANCHO], int editor, int yCursor, int xCursor
     }
 }
 
-void estado_editor(int matriz [ALTO][ANCHO])
+void estado_editor(int matriz [C_alto][C_ancho])
 {
 	/* Esta funcion se encarga de hacer el loop completo de la funcionalidad del modo editor.
 	Permite que no sea hardcodeado el ingreso de nuevas celulas, asi tambien la posiblidad de quitarlas.*/
@@ -271,7 +271,7 @@ void estado_editor(int matriz [ALTO][ANCHO])
 				 }
 				 break;
 			case 's':
-				 if (yCursor != (ALTO - 1))
+				 if (yCursor != (C_alto - 1))
 				 {
 				     yCursor++;
 				 }
@@ -283,7 +283,7 @@ void estado_editor(int matriz [ALTO][ANCHO])
 				 }
 				 break;
 			case 'd':
-				 if (xCursor != (ANCHO - 1))
+				 if (xCursor != (C_ancho - 1))
 				 {
 				     xCursor++;
 				 }
@@ -295,7 +295,7 @@ void estado_editor(int matriz [ALTO][ANCHO])
 	    } while (c != 'q');
 }
 
-int  ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionActual, int mundoActual[ALTO][ANCHO], int mundoInicial[ALTO][ANCHO])
+int  ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionActual, int mundoActual[C_alto][C_ancho], int mundoInicial[C_alto][C_ancho])
 {
 	/* Hace el calculo recursivo para saltar a la generacion especifica. Notese como se distingue si es la generacion pedida es previa o posterior a la actual.
 	En base a eso, se trata de optimizar, el punto de arranque.*/
@@ -331,23 +331,23 @@ int  ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionAc
 	return generacionTarget;
 }
 
-void copiar_mundo(int mundo[ALTO][ANCHO], int mundoToCopy[ALTO][ANCHO])
+void copiar_mundo(int mundo[C_alto][C_ancho], int mundoToCopy[C_alto][C_ancho])
 {
 	/* Una funcion de ayuda para poder igualar el mundo y mundo inicial (y viceversa) */
 
 	int y;
 	int x;
 
-	for (y = 0; y < ALTO; y++)
+	for (y = 0; y < C_alto; y++)
     {
-		for (x = 0; x < ANCHO; x++)
+		for (x = 0; x < C_ancho; x++)
         {
 			mundo[x][y] = mundoToCopy[x][y];
 		}
 	}
 }
 
-int  estado_saltar_generacion_especifica(int generacionIngresante, int mundoActual[ALTO][ANCHO], int mundoInicial[ALTO][ANCHO])
+int  estado_saltar_generacion_especifica(int generacionIngresante, int mundoActual[C_alto][C_ancho], int mundoInicial[C_alto][C_ancho])
 {
 	/* La funcion encargada de saltar a una generacion especifica. */
 

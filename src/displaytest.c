@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-
+#include "constant.h"
 // Esto es una cuadradilla de 30x30 celulas
 
-#define C_alto  30 // Cuantas celulas de alto
-#define C_ancho 30 // Cuantas celulas de largo
 #define C_CellAncho 10 // Pixeles de ancho de cada celula
 #define C_CellMargin 5 // Margen de pixeles de cada celula
 #define PantallaMargin 20 // Pixeles de margen
@@ -142,21 +140,7 @@ void dibujarcelulas(int mundo[C_alto][C_ancho]){
 	}
 }
 
-int inicializaciones(void){
-	if(!al_init()) {
-		fprintf(stderr, "Error al inicializar Allegro.\n");
-		return 0;
-	}
-	if(!al_init_primitives_addon()){
-		fprintf(stderr, "Error al inicializar Allegro primitives addon.\n");
-		return 0;
-	}
-	if(!al_install_mouse()) {
-	    fprintf(stderr, "Error al inicializar el mouse.\n");
-	    return 0;
-	}
 
-	return 1;
-}
+
 
 
