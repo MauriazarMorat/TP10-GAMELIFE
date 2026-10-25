@@ -3,6 +3,7 @@
 #include "backend.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 // ---------- FUNCIONES ---------- //
 
@@ -87,7 +88,7 @@ void aplicar_reglas_mundo (int matriz[C_alto][C_ancho])
    	copiar_mundo(matriz, sig_mundo);
 }
 
-void siguiente_generacion (int matriz[C_alto][C_ancho], int * generacionActual)
+void siguiente_generacion (int matriz[C_alto][C_ancho], uint16_t * generacionActual)
 {
 		aplicar_reglas_mundo(matriz);
 		(*generacionActual)++;
@@ -108,3 +109,39 @@ void copiar_mundo(int mundo[C_alto][C_ancho], int mundoToCopy[C_alto][C_ancho])
 		}
 	}
 }
+
+/* Hace el calculo recursivo para saltar a la generacion especifica. Notese como se distingue si es la generacion pedida es previa o posterior a la actual.
+En base a eso, se trata de optimizar, el punto de arranque.*/
+/*
+int ejecutar_hasta_generacion_especifica(int generacionTarget, int generacionActual, int mundoActual[ALTO][ANCHO], int mundoInicial[ALTO][ANCHO]){
+	int i = 0;
+
+	if(generacionTarget > generacionActual)
+	{
+		for(i = generacionActual; i <= generacionTarget; i++)
+		{
+			actualizar_mundo(mundoActual);
+		}
+	}
+	else if (generacionTarget < generacionActual && generacionTarget > 0)
+	{
+
+		* Si la generacion pedida es anterior a la actual, se partira del calculo de generacion desde el mundo inicial.
+
+		 *
+		copiar_mundo(mundoActual, mundoInicial);
+
+		for(i = 0; i <= generacionTarget; i++)
+		{
+			actualizar_mundo(mundoActual);
+		}
+	}
+	else if (generacionTarget == 0)
+	{
+		* Si la generacion es cero, se copia exactamente los valores de la matriz del mundo inicial a la de mundo,.
+		copiar_mundo(mundoActual, mundoInicial);
+	}
+
+	return generacionTarget;
+}
+*/
