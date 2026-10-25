@@ -1,7 +1,6 @@
 // ---------- LIBRERIAS ---------- //
 
 #include <stdio.h>
-
 #include "backend/backend.h"
 #include "frontend/frontend.h"
 #include "stdbool.h"
@@ -37,9 +36,7 @@ int main (void)
 
 	}
 
-
 	// Creamos el event queue
-
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
 	ALLEGRO_FONT *font = al_create_builtin_font();
 	ALLEGRO_DISPLAY *display = al_create_display(largo,alto);
