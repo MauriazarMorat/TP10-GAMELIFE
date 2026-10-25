@@ -27,6 +27,7 @@ int init_front(void); // Inicializa todos lo necesario del front.
 
 void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus); // ejecuta el buffer principal de dibujo.
 void pixelCoordToWorldCoord(int posX, int posY, position_t * worldPos); // Devuelve la posicion del mundo dada un posicion pixel.
+void helpDraw(ALLEGRO_FONT *font,GAME_STATUS * gameStatusS);
 
 // FRONT INPUT
 void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus); // Encargada de manejar todo el input del teclado.

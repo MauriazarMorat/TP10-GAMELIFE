@@ -81,7 +81,7 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 	al_draw_textf(font,al_map_rgb(255, 255, 255),
 	PantallaMargin,
 					largo-10,                   // Coordenadas X e Y en pantalla
-	            0,"Generacion actual: %d Esta pausado?: %d",gameStatus->generacion,gameStatus->isPaused
+	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d",gameStatus->generacion,gameStatus->isPaused
 	);
 
 	al_flip_display();
@@ -117,7 +117,7 @@ void pixelCoordToWorldCoord(int posX, int posY, position_t * worldPos)
 
 // FRONT INPUT
 
-// Funcion encargada de manejar todo input de teclado que se ha recibido.
+// Funcion encargada de manejar input de teclado que se ha recibido.
 void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 {
 	switch(ev.keyboard.keycode)
@@ -131,6 +131,7 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			break;
 		case ALLEGRO_KEY_SPACE: // Seteamos el flag si se ha pausado el juego.
 			gameStatus->isPaused = !(gameStatus->isPaused);
+			gameStatus->isHelp = 0;
 
 			// Si se dan estas condiciones muy probablemente se haya editado el mundo.
 			if(gameStatus->generacion == 0 && !(gameStatus->isPaused)){
@@ -155,6 +156,17 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			rellenar_mundo(gameStatus->world);
 
 			gameStatus->redraw = true;
+			break;
+		case ALLEGRO_KEY_H:
+			if(!gameStatus->isHelp){
+				gameStatus->isHelp = 1;
+				gameStatus->isPaused = 1;
+				gameStatus->isDrew = 0;
+			}else{
+				gameStatus->isHelp = 0;
+			}
+
+
 			break;
 	}
 }
@@ -208,3 +220,58 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 	printf("Mouse Y coords: %d posCell Y coords: %d\n", mousePosY, posCell.x);
 }
 
+void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
+    if(!gameStatus->isDrew){
+        al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+        al_draw_filled_rectangle(0, 0, largo, alto, al_map_rgba(0, 0, 0, 100));
+        gameStatus->isDrew = 1;
+    }
+
+    int x1 = largo / 3;
+    int x2 = (largo * 2) / 4;
+    int y1 = alto / 3;
+    int y2 = (alto * 2) / 2;
+    float offset = -0.5;
+    int grado = 20;
+
+    al_draw_filled_rectangle(x1, y1, x2, y2, al_map_rgba(40, 40, 50, 240));
+    al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(200, 200, 200), 2.0);
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+    		"Bienvenido al overlay de ayuda"
+    	);
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+        	"Pulse Espacio para pausar el juego"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+        	"Pulse Q para salir del juego"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+            "Pulse T para avanzar 1 generacion"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+        	"Pulse R para ir a la generacion de origen"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+        	"Puede clickear una celula para cambiar su estado,"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+            "Seteando asi una nueva generacion de origen"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+        		"Pulse H para salir."
+        	);
+    offset = -0.5;
+
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y1-(++offset)*grado,0,
+                "Mauricio Morat Taylor"
+            );
+
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y1-(++offset)*grado,0,
+                	"Santiago Oyarbide, Leonel Cidades, Victoria Olmos Lozano,"
+                );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y1-(++offset)*grado,0,
+                		"Creditos: GRUPO 4: "
+                	);
+
+    al_flip_display();
+}

@@ -4,6 +4,7 @@
 
 #include "backend/backend.h"
 #include "frontend/frontend.h"
+#include "stdbool.h"
 
 // ------------ MAIN ------------- //
 
@@ -15,7 +16,9 @@ int main (void)
 			.isEditing = 0,
 			.redraw = 1,
 			.generacion = 0,
-			.isPaused = 1
+			.isPaused = 1,
+			.isHelp = 0,
+			.isDrew = 0,
 	};
 
 	// Rellenamos con cero las matrices del mundo.
@@ -81,8 +84,9 @@ int main (void)
     			manejar_mouse(ev, &gameStatus);
     			break;
     	}
-
-    	if (gameStatus.redraw && al_is_event_queue_empty(event_queue))
+    	if(gameStatus.isHelp){
+			helpDraw(font, &gameStatus);
+    	}else	if (gameStatus.redraw /*&& al_is_event_queue_empty(event_queue)*/)
         {
     		mainDraw(font, &gameStatus);
     	}
