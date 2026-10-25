@@ -6,6 +6,11 @@
 #define FPS 60.0f
 #define DELTA_TIME 1.0f/FPS // Similar a como motores de video juegos como Godot manejan el tiempo.
 
+#define VelocidadInicial 0.50 //Elegimos la velocidad inicial
+#define NivelDeVelocidad VelocidadInicial/10 //Cuanto queremos variar cada cambio de velocidad
+#define MediaVelocidad 100/(MinVel/2) //Esto va a ser el 100%
+#define MinVel 1.0 //Definimos el maximo
+
 #define C_alto  50 // Cuantas celulas de alto
 #define C_ancho 50 // Cuantas celulas de largo
 
@@ -19,6 +24,7 @@ typedef struct gameStatus{
 	uint8_t isHelp : 1;
 	uint8_t isDrew : 1;
 	// espacio para flags necesarios.
+	float umbralNextGen;
 	uint16_t generacion;
 	int world[C_alto][C_ancho]; // Creamos la matriz mundo, que sera la principal.
 	int auxWorld[C_alto][C_ancho]; // Creamos una matriz auxiliar que guardara la generacion 0

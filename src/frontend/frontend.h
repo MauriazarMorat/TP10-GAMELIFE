@@ -33,7 +33,7 @@ void helpDraw(ALLEGRO_FONT *font,GAME_STATUS * gameStatusS);
 void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus); // Encargada de manejar todo el input del teclado.
 
 // FRONT TIMER
-void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCounter, double*umbralNextGen); // Encargada de manejar timer del programa.
+void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCounter); // Encargada de manejar timer del programa.
 
 // FRONT MOUSE
 void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus); // Funcion encargada de manejar el timer.

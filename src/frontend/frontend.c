@@ -81,7 +81,7 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 	al_draw_textf(font,al_map_rgb(255, 255, 255),
 	PantallaMargin,
 					largo-10,                   // Coordenadas X e Y en pantalla
-	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d",gameStatus->generacion,gameStatus->isPaused
+	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d Tiempo: %0.0f%%",gameStatus->generacion,gameStatus->isPaused,MediaVelocidad*(MinVel-gameStatus->umbralNextGen)
 	);
 
 	al_flip_display();
@@ -157,7 +157,8 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 
 			gameStatus->redraw = true;
 			break;
-		case ALLEGRO_KEY_H:
+
+		case ALLEGRO_KEY_H: //Funcion para poner el modo de ayuda
 			if(!gameStatus->isHelp){
 				gameStatus->isHelp = 1;
 				gameStatus->isPaused = 1;
@@ -165,8 +166,22 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			}else{
 				gameStatus->isHelp = 0;
 			}
+			break;
 
+		case ALLEGRO_KEY_RIGHT: //Funcion para subir la velocidad hasta 0.00
 
+			gameStatus->umbralNextGen -= NivelDeVelocidad;
+			if(gameStatus->umbralNextGen<=NivelDeVelocidad){
+				gameStatus->umbralNextGen = NivelDeVelocidad; //Topeamos el valor para que despues comienze.
+			}
+
+			break;
+		case ALLEGRO_KEY_LEFT: //funcion para bajar la velocidad hasta 1.00
+
+			gameStatus->umbralNextGen += NivelDeVelocidad; //Sumamos un nivel de velocidad
+			if(gameStatus->umbralNextGen>=MinVel){
+				gameStatus->umbralNextGen = MinVel-NivelDeVelocidad; //Topeamos el valor para que despues comienze.
+			}
 			break;
 	}
 }
@@ -174,21 +189,21 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 // FRONT TIMER
 
 // Manejamos el timer.
-void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCounter, double*umbralNextGen)
+void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCounter)
 {
 
 	// Sumamos a nuestro contador de tiempo para siguiente generacion, el delta time.
 	// Similar a como motores de videojuegos funcionan.
 	*nextGenCounter += DELTA_TIME;
 
-	if(*nextGenCounter >= *umbralNextGen) {
+	if(*nextGenCounter >= (gameStatus->umbralNextGen) ) {
 	    // Al cumplirse el umbral de tiempo comprobamos si el flag de pausado esta prendido, para ver si pasamos a la siguiente generacion.
 	    if(!(gameStatus->isPaused)){
 	    	printf("un segundo paso!\n");
 	    	siguiente_generacion(gameStatus->world, &(gameStatus->generacion));
 	    }
 
-	    *nextGenCounter -= *umbralNextGen;
+	    *nextGenCounter -= gameStatus->umbralNextGen;
 	}
 
 	gameStatus->redraw = true;
@@ -206,8 +221,8 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 	position_t posCell;
 
 	pixelCoordToWorldCoord(mousePosY, mousePosX, &posCell);
-	// validamos si la posicion obtenida es valida.
-	if(posCell.x != -1 && posCell.y != -1){
+	// validamos si la posicion obtenida es valida y si NO estamos en modo ayuda
+	if((posCell.x != -1 && posCell.y != -1)&&!(gameStatus->isHelp)){
 		// Si lo es, entonces a la posicion del mundo asignamos el estado de vida de una celula.
 	    gameStatus->world[posCell.x][posCell.y] = !(gameStatus->world[posCell.x][posCell.y]);
 
@@ -221,12 +236,13 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 }
 
 void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
+	//Verificamos si ya se dibujo alguna vez, esto para opacar el fondo 1 sola vez
     if(!gameStatus->isDrew){
         al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
         al_draw_filled_rectangle(0, 0, largo, alto, al_map_rgba(0, 0, 0, 100));
         gameStatus->isDrew = 1;
     }
-
+    //Seteamos las cordenadas donde vamos a poner el cuadrado basadas en la pagina
     int x1 = largo / 3;
     int x2 = (largo * 2) / 4;
     int y1 = alto / 3;
@@ -234,8 +250,11 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
     float offset = -0.5;
     int grado = 20;
 
+    //Dibujamos un recuadro grande donde vamos a escrtibir el help text
     al_draw_filled_rectangle(x1, y1, x2, y2, al_map_rgba(40, 40, 50, 240));
     al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(200, 200, 200), 2.0);
+
+    //Dibujamos el texto de arriba hacia abajo
     al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
     		"Bienvenido al overlay de ayuda"
     	);
@@ -260,6 +279,7 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
     al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
         		"Pulse H para salir."
         	);
+    //A partir de aca empezamos desde abajo hacia arriba
     offset = -0.5;
 
     al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y1-(++offset)*grado,0,

@@ -19,6 +19,7 @@ int main (void)
 			.isPaused = 1,
 			.isHelp = 0,
 			.isDrew = 0,
+			.umbralNextGen = VelocidadInicial,
 	};
 
 	// Rellenamos con cero las matrices del mundo.
@@ -43,7 +44,7 @@ int main (void)
 
 	// Creamos counters del programa.
 	double nextGenCounter = 0.0f; // Contador para saber cuanto tiempo paso desde la anterior pasada de generacion.
-	double umbralNextGen = 0.25f;
+
 
 	if(event_queue == NULL || display == NULL || font == NULL || timer == NULL )
     {
@@ -75,7 +76,7 @@ int main (void)
     			gameStatus.isRunning = false;
     			break;
     		case ALLEGRO_EVENT_TIMER:
-    			manejar_timer(ev, &gameStatus, &nextGenCounter, &umbralNextGen);
+    			manejar_timer(ev, &gameStatus, &nextGenCounter);
     			break;
     		case ALLEGRO_EVENT_KEY_DOWN:
     			manejar_teclado(ev, &gameStatus);
