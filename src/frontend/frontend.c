@@ -81,7 +81,10 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 	al_draw_textf(font,al_map_rgb(255, 255, 255),
 	PantallaMargin,
 					largo-10,                   // Coordenadas X e Y en pantalla
-	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d Tiempo: %0.0f%%",gameStatus->generacion,gameStatus->isPaused,MediaVelocidad*(MinVel-gameStatus->umbralNextGen)
+	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d Tiempo: %0.0f%%",
+				gameStatus->generacion,
+				gameStatus->isPaused,
+				MEDIAVELOCIDAD*(MIN_VEL-gameStatus->umbralNextGen)
 	);
 
 	al_flip_display();
@@ -160,27 +163,26 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 
 		case ALLEGRO_KEY_H: //Funcion para poner el modo de ayuda
 			if(!gameStatus->isHelp){
-				gameStatus->isHelp = 1;
-				gameStatus->isPaused = 1;
-				gameStatus->isDrew = 0;
+				gameStatus->isHelp = true;
+				gameStatus->isPaused = true;
+				gameStatus->isHelpMenuBlenderReady = false;
 			}else{
-				gameStatus->isHelp = 0;
+				gameStatus->isHelp = false;
 			}
 			break;
 
 		case ALLEGRO_KEY_RIGHT: //Funcion para subir la velocidad hasta 0.00
-
-			gameStatus->umbralNextGen -= NivelDeVelocidad;
-			if(gameStatus->umbralNextGen<=NivelDeVelocidad){
-				gameStatus->umbralNextGen = NivelDeVelocidad; //Topeamos el valor para que despues comienze.
+			gameStatus->umbralNextGen -= CAMBIO_DE_VELOCIDAD;
+			if(gameStatus->umbralNextGen<=CAMBIO_DE_VELOCIDAD){
+				gameStatus->umbralNextGen = CAMBIO_DE_VELOCIDAD; //Topeamos el valor para que despues comienze.
 			}
-
 			break;
+
 		case ALLEGRO_KEY_LEFT: //funcion para bajar la velocidad hasta 1.00
 
-			gameStatus->umbralNextGen += NivelDeVelocidad; //Sumamos un nivel de velocidad
-			if(gameStatus->umbralNextGen>=MinVel){
-				gameStatus->umbralNextGen = MinVel-NivelDeVelocidad; //Topeamos el valor para que despues comienze.
+			gameStatus->umbralNextGen += CAMBIO_DE_VELOCIDAD; //Sumamos un nivel de velocidad
+			if(gameStatus->umbralNextGen>=MIN_VEL){
+				gameStatus->umbralNextGen = MIN_VEL-CAMBIO_DE_VELOCIDAD; //Topeamos el valor para que despues comienze.
 			}
 			break;
 	}
@@ -199,7 +201,7 @@ void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCount
 	if(*nextGenCounter >= (gameStatus->umbralNextGen) ) {
 	    // Al cumplirse el umbral de tiempo comprobamos si el flag de pausado esta prendido, para ver si pasamos a la siguiente generacion.
 	    if(!(gameStatus->isPaused)){
-	    	printf("un segundo paso!\n");
+
 	    	siguiente_generacion(gameStatus->world, &(gameStatus->generacion));
 	    }
 
@@ -237,10 +239,10 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 
 void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
 	//Verificamos si ya se dibujo alguna vez, esto para opacar el fondo 1 sola vez
-    if(!gameStatus->isDrew){
+    if(!gameStatus->isHelpMenuBlenderReady){
         al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
         al_draw_filled_rectangle(0, 0, largo, alto, al_map_rgba(0, 0, 0, 100));
-        gameStatus->isDrew = 1;
+        gameStatus->isHelpMenuBlenderReady = true;
     }
     //Seteamos las cordenadas donde vamos a poner el cuadrado basadas en la pagina
     int x1 = largo / 3;
@@ -254,6 +256,7 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
     al_draw_filled_rectangle(x1, y1, x2, y2, al_map_rgba(40, 40, 50, 240));
     al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(200, 200, 200), 2.0);
 
+    //Escribimos los posibles comandos para el usuario
     //Dibujamos el texto de arriba hacia abajo
     al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
     		"Bienvenido al overlay de ayuda"
@@ -275,6 +278,12 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
         );
     al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
             "Seteando asi una nueva generacion de origen"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+            "Con la Right Arrow Key se aumenta la velocidad"
+        );
+    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
+            "Con la Left Arrow Key se disminuye la velocidad"
         );
     al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
         		"Pulse H para salir."

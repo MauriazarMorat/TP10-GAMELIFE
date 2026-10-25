@@ -18,8 +18,8 @@ int main (void)
 			.generacion = 0,
 			.isPaused = 1,
 			.isHelp = 0,
-			.isDrew = 0,
-			.umbralNextGen = VelocidadInicial,
+			.isHelpMenuBlenderReady = 0,
+			.umbralNextGen = VELOCIDAD_INICIAL,
 	};
 
 	// Rellenamos con cero las matrices del mundo.
@@ -32,8 +32,11 @@ int main (void)
 	}
 	else
     {
+
 		printf("Se ha inicializado ALLEGRO correctamente.\n");
+
 	}
+
 
 	// Creamos el event queue
 
@@ -45,13 +48,13 @@ int main (void)
 	// Creamos counters del programa.
 	double nextGenCounter = 0.0f; // Contador para saber cuanto tiempo paso desde la anterior pasada de generacion.
 
-
 	if(event_queue == NULL || display == NULL || font == NULL || timer == NULL )
     {
 		fprintf(stderr, "El siguiente error fatal ha ocurrido.\n");
 		al_destroy_event_queue(event_queue);
 		return -1;
 	}
+
 
 	// Configuramos eventos
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -60,6 +63,7 @@ int main (void)
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
     al_start_timer(timer);
+
     mainDraw(font, &gameStatus);
 
     /* Bucle principal del programa. */
@@ -92,7 +96,6 @@ int main (void)
     		mainDraw(font, &gameStatus);
     	}
     }
-
     al_destroy_font(font);
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);
