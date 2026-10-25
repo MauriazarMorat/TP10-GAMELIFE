@@ -16,7 +16,6 @@ typedef struct gameStatus{
 	uint8_t isEditing : 1;
 	uint8_t isPaused : 1;
 	uint8_t redraw : 1;
-	uint8_t nextGen : 1;
 	// espacio para flags necesarios.
 	uint16_t generacion;
 	int world[C_alto][C_ancho]; // Creamos la matriz mundo, que sera la principal.

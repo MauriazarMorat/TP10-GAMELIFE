@@ -92,6 +92,7 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 // Devuelve la posicion del mundo en base a la posicion de pixeles dada.
 void pixelCoordToWorldCoord(int posX, int posY, position_t * worldPos)
 {
+
 	// Validamos si la posicion pasada esta fuera del mundo graficamente.
 	if(posX < PantallaMargin || posX > (PantallaMargin+((CELL_SIZE+CELL_MARGIN)*C_ancho)))
 	{
@@ -132,7 +133,7 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			gameStatus->isPaused = !(gameStatus->isPaused);
 
 			// Si se dan estas condiciones muy probablemente se haya editado el mundo.
-			if(gameStatus->generacion == 0 && (gameStatus->isPaused)){
+			if(gameStatus->generacion == 0 && !(gameStatus->isPaused)){
 				copiar_mundo(gameStatus->auxWorld, gameStatus->world);
 			}
 
@@ -169,10 +170,9 @@ void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCount
 	*nextGenCounter += DELTA_TIME;
 
 	if(*nextGenCounter >= *umbralNextGen) {
-	    printf("un segundo paso!\n");
-
 	    // Al cumplirse el umbral de tiempo comprobamos si el flag de pausado esta prendido, para ver si pasamos a la siguiente generacion.
 	    if(!(gameStatus->isPaused)){
+	    	printf("un segundo paso!\n");
 	    	siguiente_generacion(gameStatus->world, &(gameStatus->generacion));
 	    }
 
