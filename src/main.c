@@ -42,7 +42,11 @@ int main (void)
 
 	// Creamos el event queue
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
-	ALLEGRO_FONT *font = al_create_builtin_font();
+	ALLEGRO_FONT *font = al_load_ttf_font(
+    "assets/fuente.otf",
+    SIZE_FUENTE,
+    0
+);
 	ALLEGRO_DISPLAY *display = al_create_display(largo,alto);
 	ALLEGRO_TIMER *timer = al_create_timer(DELTA_TIME);
 

@@ -61,6 +61,11 @@ int init_front(void){
 		fprintf(stderr, "Error al reservar espacio para sonidos.\n");
 		return 0;
 	}
+	if (!al_init_ttf_addon())
+	{
+		fprintf(stderr, "Error al inicializar las fuentes TTF.\n");
+		return 0;
+	}
 
 	return 1;
 }

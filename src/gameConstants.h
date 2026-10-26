@@ -21,6 +21,8 @@
 #define COLOR_CELULA_VIVA al_map_rgb(80, 220, 150)
 #define COLOR_TEXTO al_map_rgb(230, 233, 238)
 
+#define SIZE_FUENTE 16
+
 // Constantes intro.
 #define INTRO_ANCHO 600
 #define INTRO_ALTO 400
