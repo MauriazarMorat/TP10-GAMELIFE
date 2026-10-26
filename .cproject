@@ -35,6 +35,10 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.382807135" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.link.option.libs.514226713" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="allegro"/>
+									<listOptionValue builtIn="false" value="allegro_ttf"/>
+									<listOptionValue builtIn="false" value="allegro_acodec"/>
+									<listOptionValue builtIn="false" value="allegro_audio"/>
+									<listOptionValue builtIn="false" value="allegro_image"/>
 									<listOptionValue builtIn="false" value="allegro_primitives"/>
 									<listOptionValue builtIn="false" value="allegro_font"/>
 								</option>
