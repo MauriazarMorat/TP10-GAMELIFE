@@ -37,6 +37,7 @@ typedef struct gameStatus{
 	uint8_t redraw : 1;
 	uint8_t isHelp : 1;
 	uint8_t isHelpMenuBlenderReady : 1; //Es un flag para confirmar si se aplico la opacidad en el menu help
+	uint8_t isMusic : 1;
 	// espacio para flags necesarios.
 	float umbralNextGen;
 	uint16_t generacion;

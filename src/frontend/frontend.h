@@ -46,4 +46,7 @@ int mostrar_intro(void);
 // LIMPIAR SONIDOS
 void limpiar_sonidos_front(void);
 
+// MOSTRAR MUSICA
+void playMusic(ALLEGRO_AUDIO_STREAM *musica,GAME_STATUS *gameStatus);
+
 #endif

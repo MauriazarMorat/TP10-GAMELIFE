@@ -20,6 +20,7 @@ int main (void)
 			.isHelp = 0,
 			.isHelpMenuBlenderReady = 0,
 			.umbralNextGen = VELOCIDAD_INICIAL,
+			.isMusic = 0,
 	};
 
 	// Rellenamos con cero las matrices del mundo.
@@ -50,13 +51,14 @@ int main (void)
     SIZE_FUENTE,
     0
 );
+	ALLEGRO_AUDIO_STREAM *music = al_load_audio_stream("assets/TeriaMusic.ogg", 4, 2048);
 	ALLEGRO_DISPLAY *display = al_create_display(largo,alto);
 	ALLEGRO_TIMER *timer = al_create_timer(DELTA_TIME);
 
 	// Creamos counters del programa.
 	double nextGenCounter = 0.0f; // Contador para saber cuanto tiempo paso desde la anterior pasada de generacion.
 
-	if(event_queue == NULL || display == NULL || font == NULL || timer == NULL )
+	if(event_queue == NULL || display == NULL || font == NULL || timer == NULL || music == NULL )
     {
 		fprintf(stderr, "El siguiente error fatal ha ocurrido.\n");
 		al_destroy_event_queue(event_queue);
@@ -123,7 +125,9 @@ int main (void)
 
 			gameStatus.redraw = false;
 		}
+    	playMusic(music,&gameStatus);
     }
+    al_destroy_audio_stream(music);
     al_destroy_font(font);
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);

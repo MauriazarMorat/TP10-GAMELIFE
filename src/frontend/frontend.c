@@ -288,6 +288,9 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 				gameStatus->umbralNextGen = MIN_VEL-CAMBIO_DE_VELOCIDAD; //Topeamos el valor para que despues comienze.
 			}
 			break;
+		case ALLEGRO_KEY_M: //funcion para togglear la musica
+			gameStatus->isMusic = !gameStatus->isMusic;
+			break;
 	}
 }
 
@@ -427,6 +430,10 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus)
     y += espacio;
 
     al_draw_text(font, blanco, x, y, 0,
+                 "Pulse M para activar la musica");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
                  "Pulse H para cerrar la ayuda");
 
     // Deja una línea vacía antes de los créditos.
@@ -448,6 +455,28 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus)
                  "Mauricio Morat Taylor");
 
     al_flip_display();
+}
+
+void playMusic(ALLEGRO_AUDIO_STREAM *musica,GAME_STATUS *gameStatus){
+	static bool reproduciendo_anterior = false;
+	static bool once = false;
+	if(!once){
+		al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
+		al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
+		al_set_audio_stream_playing(musica, false);
+		once = true;
+	}
+
+	if(gameStatus->isMusic!=reproduciendo_anterior){
+		if(gameStatus->isMusic){
+			al_set_audio_stream_playing(musica, true);
+		}else{
+			al_seek_audio_stream_secs(musica, 0.0);
+			al_set_audio_stream_playing(musica, false);
+		}
+		reproduciendo_anterior = gameStatus->isMusic;
+	}
+
 }
 
 int mostrar_intro(void)
