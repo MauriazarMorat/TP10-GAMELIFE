@@ -110,7 +110,7 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 	al_draw_textf(font,COLOR_TEXTO,
 	PantallaMargin,
 					largo-10,                   // Coordenadas X e Y en pantalla
-	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d Tiempo: %0.0f%%",
+	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d Velocidad: %0.0f%%",
 				gameStatus->generacion,
 				gameStatus->isPaused,
 				MEDIAVELOCIDAD*(MIN_VEL-gameStatus->umbralNextGen)
@@ -266,71 +266,99 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 	printf("Mouse Y coords: %d posCell Y coords: %d\n", mousePosY, posCell.x);
 }
 
-void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
-	//Verificamos si ya se dibujo alguna vez, esto para opacar el fondo 1 sola vez
-    if(!gameStatus->isHelpMenuBlenderReady){
-        al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
-        al_draw_filled_rectangle(0, 0, largo, alto, al_map_rgba(0, 0, 0, 100));
-        gameStatus->isHelpMenuBlenderReady = true;
+void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus)
+{
+    int margen = 20;
+    int espacio = al_get_font_line_height(font) + 6;
+
+    // Cada elemento es una línea del menú.
+    const char *lineas[] = {
+        "Bienvenido al overlay de ayuda",
+        "Pulse Espacio para iniciar o pausar",
+        "Pulse Backspace para salir del juego",
+        "Pulse T para avanzar una generacion",
+        "Pulse R para volver a la generacion inicial",
+        "Pulse C para limpiar el tablero",
+        "Click en una celula para cambiar su estado",
+        "Esto establece una nueva generacion de origen",
+        "Flecha derecha: aumentar la velocidad",
+        "Flecha izquierda: disminuir la velocidad",
+        "Pulse H para cerrar la ayuda",
+        "",
+        "Creditos: GRUPO 4",
+        "Santiago Oyarbide - Leonel Cidades",
+        "Victoria Olmos Lozano",
+        "Mauricio Morat Taylor"
+    };
+
+    int cantidad = sizeof(lineas) / sizeof(lineas[0]);
+
+    // Busca la línea más ancha para que ninguna sobresalga.
+    int anchoTexto = 0;
+
+    for (int i = 0; i < cantidad; i++)
+    {
+        int anchoLinea = al_get_text_width(font, lineas[i]);
+
+        if (anchoLinea > anchoTexto)
+        {
+            anchoTexto = anchoLinea;
+        }
     }
-    //Seteamos las cordenadas donde vamos a poner el cuadrado basadas en la pagina
-    int x1 = largo / 3;
-    int x2 = (largo * 2) / 4;
-    int y1 = alto / 3;
-    int y2 = (alto * 2) / 2;
-    float offset = -0.5;
-    int grado = 20;
 
-    //Dibujamos un recuadro grande donde vamos a escrtibir el help text
-    al_draw_filled_rectangle(x1, y1, x2, y2, al_map_rgba(40, 40, 50, 240));
-    al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(200, 200, 200), 2.0);
+    // Agrega margen alrededor del contenido.
+    int anchoPanel = anchoTexto + 2 * margen;
+    int altoPanel = (cantidad - 1) * espacio
+                  + al_get_font_line_height(font)
+                  + 2 * margen;
 
-    //Escribimos los posibles comandos para el usuario
-    //Dibujamos el texto de arriba hacia abajo
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-    		"Bienvenido al overlay de ayuda"
-    	);
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-        	"Pulse Espacio para pausar el juego"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-        	"Pulse Q para salir del juego"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-            "Pulse T para avanzar 1 generacion"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-        	"Pulse R para ir a la generacion de origen"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-        	"Puede clickear una celula para cambiar su estado,"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-            "Seteando asi una nueva generacion de origen"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-            "Con la Right Arrow Key se aumenta la velocidad"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-            "Con la Left Arrow Key se disminuye la velocidad"
-        );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y2+(++offset)*grado,0,
-        		"Pulse H para salir."
-        	);
-    //A partir de aca empezamos desde abajo hacia arriba
-    offset = -0.5;
+    int anchoVentana = al_get_display_width(al_get_current_display());
+    int altoVentana = al_get_display_height(al_get_current_display());
 
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y1-(++offset)*grado,0,
-                "Mauricio Morat Taylor"
-            );
+    // Ubica el panel abajo a la derecha, separado del borde. 
+    int x2 = anchoVentana - margen;
+    int y2 = altoVentana - margen;
+    int x1 = x2 - anchoPanel;
+    int y1 = y2 - altoPanel;
 
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y1-(++offset)*grado,0,
-                	"Santiago Oyarbide, Leonel Cidades, Victoria Olmos Lozano,"
-                );
-    al_draw_textf(font,al_map_rgb(255, 255, 255),x2+5,y1-(++offset)*grado,0,
-                		"Creditos: GRUPO 4: "
-                	);
+    ALLEGRO_COLOR blanco = al_map_rgb(255, 255, 255);
 
+    // Guarda la configuración de mezcla.
+    int operacion, origen, destino;
+    al_get_blender(&operacion, &origen, &destino);
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+
+    // Redibuja el tablero para no acumular capas oscuras.
+    al_clear_to_color(BACKGROUND_COLOR);
+    dibujarCelulas(gameStatus);
+
+    al_draw_filled_rectangle(
+        0, 0, anchoVentana, altoVentana,
+        al_map_rgba_f(0, 0, 0, 0.4)
+    );
+
+    // Mantiene el panel oscuro y el borde blanco.
+    al_draw_filled_rectangle(
+        x1, y1, x2, y2,
+        al_map_rgb(40, 40, 50)
+    );
+
+    al_draw_rectangle(x1, y1, x2, y2, blanco, 2.0);
+
+    // Escribe las líneas respetando los márgenes interiores. 
+    for (int i = 0; i < cantidad; i++)
+    {
+        al_draw_text(
+            font,
+            blanco,
+            x1 + margen,
+            y1 + margen + i * espacio,
+            0,
+            lineas[i]
+        );
+    }
+
+    al_set_blender(operacion, origen, destino);
     al_flip_display();
 }
 
