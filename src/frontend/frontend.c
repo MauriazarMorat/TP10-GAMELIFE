@@ -29,7 +29,8 @@ static void dibujarCelulas(GAME_STATUS *gameStatus); // Dibuja las todas las cel
 
 // ---------- FUNCIONES ---------- //
 
-int init_front(void){
+int init_front(void)
+{
 	if(!al_init()) 
 	{
 		fprintf(stderr, "Error al inicializar Allegro.\n");
@@ -109,17 +110,18 @@ static void dibujarCelulas(GAME_STATUS *gameStatus)
 		cursorX = PantallaMargin; // empezamos desde el margen de la pantalla.
 		for (int x=0; x<C_ancho ; x++)
 		{
-			if (gameStatus->world[y][x]) // Si la celula esta viva, el color del rectangulo a imprimir sera blanco
+			if (gameStatus->world[y][x])
 			{
 				color = COLOR_CELULA_VIVA;
 			} else
 			{
-				color = COLOR_CELULA_MUERTA; // Si la celula esta muerta, el color del rectangulo a imprimir sera negro.
+				color = COLOR_CELULA_MUERTA;
 			}
-			// Dibujamos celula, se viva o muerta.
+
+			// Dibujamos celula, sea viva o muerta.
 			al_draw_filled_rectangle(cursorX, cursorY, cursorX+CELL_SIZE, cursorY+CELL_SIZE, color);
 			cursorX += CELL_SIZE + CELL_MARGIN;
-		} // Dibujo una row
+		} // Dibujamos una row
 		cursorY+= CELL_SIZE + CELL_MARGIN;
 	}
 }
@@ -131,10 +133,10 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 
 	dibujarCelulas(gameStatus);
 
-	// escribimos el texto debajo del mapa del juego.
+	// Escribimos el texto debajo del mapa del juego.
 	al_draw_textf(font,COLOR_TEXTO,
-	PantallaMargin,
-					largo-10,                   // Coordenadas X e Y en pantalla
+				PantallaMargin,
+				largo-10,                   // Coordenadas X e Y en pantalla
 	            0,"Pulse H para ayuda, Generacion actual: %d Pausado?: %d Velocidad: %0.0f%%",
 				gameStatus->generacion,
 				gameStatus->isPaused,
@@ -180,7 +182,8 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 	switch(ev.keyboard.keycode)
 	{
 		case ALLEGRO_KEY_BACKSPACE: // Shortcut para cerrar programa.
-			if (sonidoX) {
+			if (sonidoX) 
+			{
 				al_play_sample(sonidoX, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
 			al_rest(0.5); // Pausa breve para que el sonido termine antes de destruir la ventana
@@ -188,7 +191,8 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			break;
 
 		case ALLEGRO_KEY_T: // Tecla para avanzar una generacion.
-			if (sonidoH) {
+			if (sonidoH) 
+			{
 				al_play_sample(sonidoH, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
 			siguiente_generacion(gameStatus->world, &(gameStatus->generacion));
@@ -201,13 +205,20 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 
 			if (gameStatus->isPaused) 
 			{
-				if (sonidoEspacioPausa) al_play_sample(sonidoEspacioPausa, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				if (sonidoEspacioPausa) 
+				{
+					al_play_sample(sonidoEspacioPausa, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				}
 			} else 
 			{
-				if (sonidoEspacioDespausa) al_play_sample(sonidoEspacioDespausa, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				if (sonidoEspacioDespausa)
+				{
+					al_play_sample(sonidoEspacioDespausa, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				}
 			}
 			// Si se dan estas condiciones muy probablemente se haya editado el mundo.
-			if(gameStatus->generacion == 0 && !(gameStatus->isPaused)){
+			if (gameStatus->generacion == 0 && !(gameStatus->isPaused))
+			{
 				copiar_mundo(gameStatus->auxWorld, gameStatus->world);
 			}
 
@@ -241,34 +252,39 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			break;
 
 		case ALLEGRO_KEY_H: //Funcion para poner el modo de ayuda
-			if (sonidoH) {
+			if (sonidoH) 
+			{
 				al_play_sample(sonidoH, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
-			if(!gameStatus->isHelp){
+			if (!gameStatus->isHelp){
 				gameStatus->isHelp = true;
 				gameStatus->isPaused = true;
-				gameStatus->isHelpMenuBlenderReady = false;
-			}else{
+			} else
+			{
 				gameStatus->isHelp = false;
 			}
 			break;
 
 		case ALLEGRO_KEY_RIGHT: //Funcion para subir la velocidad hasta 0.00
-			if (sonidoRight) {
+			if (sonidoRight) 
+			{
 				al_play_sample(sonidoRight, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
 			gameStatus->umbralNextGen -= CAMBIO_DE_VELOCIDAD;
-			if(gameStatus->umbralNextGen<=CAMBIO_DE_VELOCIDAD){
+			if(gameStatus->umbralNextGen<=CAMBIO_DE_VELOCIDAD)
+			{
 				gameStatus->umbralNextGen = CAMBIO_DE_VELOCIDAD; //Topeamos el valor para que despues comienze.
 			}
 			break;
 
 		case ALLEGRO_KEY_LEFT: //funcion para bajar la velocidad hasta 1.00
-			if (sonidoLeft) {
+			if (sonidoLeft) 
+			{
 				al_play_sample(sonidoLeft, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
 			gameStatus->umbralNextGen += CAMBIO_DE_VELOCIDAD; //Sumamos un nivel de velocidad
-			if(gameStatus->umbralNextGen>=MIN_VEL){
+			if(gameStatus->umbralNextGen>=MIN_VEL)
+			{
 				gameStatus->umbralNextGen = MIN_VEL-CAMBIO_DE_VELOCIDAD; //Topeamos el valor para que despues comienze.
 			}
 			break;
@@ -280,15 +296,15 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 // Manejamos el timer.
 void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCounter)
 {
-
 	// Sumamos a nuestro contador de tiempo para siguiente generacion, el delta time.
 	// Similar a como motores de videojuegos funcionan.
 	*nextGenCounter += DELTA_TIME;
 
-	if(*nextGenCounter >= (gameStatus->umbralNextGen) ) {
+	if(*nextGenCounter >= (gameStatus->umbralNextGen) ) 
+	{
 	    // Al cumplirse el umbral de tiempo comprobamos si el flag de pausado esta prendido, para ver si pasamos a la siguiente generacion.
-	    if(!(gameStatus->isPaused)){
-
+	    if(!(gameStatus->isPaused))
+		{
 	    	siguiente_generacion(gameStatus->world, &(gameStatus->generacion));
 	    }
 
@@ -300,8 +316,8 @@ void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCount
 
 
 // Al detectarse un click, buscaremos si el usuario pretente cambiar el estado de vida de una celula.
-void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
-
+void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
+{
 	// Al detectarse un click
 	int mousePosX = ev.mouse.x;
 	int mousePosY = ev.mouse.y;
@@ -311,10 +327,10 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 
 	pixelCoordToWorldCoord(mousePosY, mousePosX, &posCell);
 	// validamos si la posicion obtenida es valida y si NO estamos en modo ayuda
-	if((posCell.x != -1 && posCell.y != -1)&&!(gameStatus->isHelp)){
+	if ((posCell.x != -1 && posCell.y != -1)&&!(gameStatus->isHelp))
+	{
 		// Si lo es, entonces a la posicion del mundo asignamos el estado de vida de una celula.
 	    gameStatus->world[posCell.x][posCell.y] = !(gameStatus->world[posCell.x][posCell.y]);
-
 
 		if (gameStatus->world[posCell.x][posCell.y] == 1) 
 		{
@@ -328,9 +344,6 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 	    gameStatus->isPaused = true;
 	    gameStatus->redraw = true;
 	}
-
-	printf("Mouse X coords: %d posCell X coords: %d\n", mousePosX, posCell.y);
-	printf("Mouse Y coords: %d posCell Y coords: %d\n", mousePosY, posCell.x);
 }
 
 void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus)
@@ -338,73 +351,33 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus)
     int margen = 20;
     int espacio = al_get_font_line_height(font) + 6;
 
-    // Cada elemento es una línea del menú.
-    const char *lineas[] = {
-        "Bienvenido al overlay de ayuda",
-        "Pulse Espacio para iniciar o pausar",
-        "Pulse Backspace para salir del juego",
-        "Pulse T para avanzar una generacion",
-        "Pulse R para volver a la generacion inicial",
-        "Pulse C para limpiar el tablero",
-        "Click en una celula para cambiar su estado",
-        "Esto establece una nueva generacion de origen",
-        "Flecha derecha: aumentar la velocidad",
-        "Flecha izquierda: disminuir la velocidad",
-        "Pulse H para cerrar la ayuda",
-        "",
-        "Creditos: GRUPO 4",
-        "Santiago Oyarbide - Leonel Cidades",
-        "Victoria Olmos Lozano",
-        "Mauricio Morat Taylor"
-    };
+    // Esquina inferior derecha del panel.
+    int x2 = (largo) - margen;
+    int y2 = (alto) - margen;
 
-    int cantidad = sizeof(lineas) / sizeof(lineas[0]);
+    // El panel tiene 760 píxeles de ancho y espacio para 16 líneas.
+    int x1 = x2 - 760;
+    int y1 = y2 - (16 * espacio + 2 * margen);
 
-    // Busca la línea más ancha para que ninguna sobresalga.
-    int anchoTexto = 0;
-
-    for (int i = 0; i < cantidad; i++)
-    {
-        int anchoLinea = al_get_text_width(font, lineas[i]);
-
-        if (anchoLinea > anchoTexto)
-        {
-            anchoTexto = anchoLinea;
-        }
-    }
-
-    // Agrega margen alrededor del contenido.
-    int anchoPanel = anchoTexto + 2 * margen;
-    int altoPanel = (cantidad - 1) * espacio
-                  + al_get_font_line_height(font)
-                  + 2 * margen;
-
-    int anchoVentana = al_get_display_width(al_get_current_display());
-    int altoVentana = al_get_display_height(al_get_current_display());
-
-    // Ubica el panel abajo a la derecha, separado del borde. 
-    int x2 = anchoVentana - margen;
-    int y2 = altoVentana - margen;
-    int x1 = x2 - anchoPanel;
-    int y1 = y2 - altoPanel;
+    // Posición donde empieza el texto.
+    int x = x1 + margen;
+    int y = y1 + margen;
 
     ALLEGRO_COLOR blanco = al_map_rgb(255, 255, 255);
 
-    // Guarda la configuración de mezcla.
-    int operacion, origen, destino;
-    al_get_blender(&operacion, &origen, &destino);
-    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
-
-    // Redibuja el tablero para no acumular capas oscuras.
+    // Dibuja nuevamente el tablero.
     al_clear_to_color(BACKGROUND_COLOR);
     dibujarCelulas(gameStatus);
 
+    // Configura la transparencia y oscurece el tablero.
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+
     al_draw_filled_rectangle(
-        0, 0, anchoVentana, altoVentana,
+        0, 0, largo, alto,
         al_map_rgba_f(0, 0, 0, 0.4)
     );
 
-    // Mantiene el panel oscuro y el borde blanco.
+    // Dibuja el panel oscuro y su borde blanco.
     al_draw_filled_rectangle(
         x1, y1, x2, y2,
         al_map_rgb(40, 40, 50)
@@ -412,20 +385,68 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus)
 
     al_draw_rectangle(x1, y1, x2, y2, blanco, 2.0);
 
-    // Escribe las líneas respetando los márgenes interiores. 
-    for (int i = 0; i < cantidad; i++)
-    {
-        al_draw_text(
-            font,
-            blanco,
-            x1 + margen,
-            y1 + margen + i * espacio,
-            0,
-            lineas[i]
-        );
-    }
+    // Después de cada texto, baja una línea.
+    al_draw_text(font, blanco, x, y, 0,
+                 "Bienvenido al overlay de ayuda");
+    y += espacio;
 
-    al_set_blender(operacion, origen, destino);
+    al_draw_text(font, blanco, x, y, 0,
+                 "Pulse Espacio para iniciar o pausar");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Pulse Backspace para salir del juego");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Pulse T para avanzar una generacion");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Pulse R para volver a la generacion inicial");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Pulse C para limpiar el tablero");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Click en una celula para cambiar su estado");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Esto establece una nueva generacion de origen");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Flecha derecha: aumentar la velocidad");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Flecha izquierda: disminuir la velocidad");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Pulse H para cerrar la ayuda");
+
+    // Deja una línea vacía antes de los créditos.
+    y += 2 * espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Creditos: GRUPO 4");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Santiago Oyarbide - Leonel Cidades");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Victoria Olmos Lozano");
+    y += espacio;
+
+    al_draw_text(font, blanco, x, y, 0,
+                 "Mauricio Morat Taylor");
+
     al_flip_display();
 }
 
@@ -564,7 +585,11 @@ int mostrar_intro(void)
 	return continuar;
 }
 
-void limpiar_sonidos_front(void) {
+void limpiar_sonidos_front(void)
+{
+    // Detiene las reproducciones antes de liberar los sonidos.
+    al_stop_samples();
+
     if (sonidoH) al_destroy_sample(sonidoH);
     if (sonidoR) al_destroy_sample(sonidoR);
     if (sonidoRight) al_destroy_sample(sonidoRight);
@@ -574,4 +599,16 @@ void limpiar_sonidos_front(void) {
     if (sonidoClickPoner) al_destroy_sample(sonidoClickPoner);
     if (sonidoClickQuitar) al_destroy_sample(sonidoClickQuitar);
     if (sonidoC) al_destroy_sample(sonidoC);
+    if (sonidoX) al_destroy_sample(sonidoX);
+
+    sonidoH = NULL;
+    sonidoR = NULL;
+    sonidoRight = NULL;
+    sonidoLeft = NULL;
+    sonidoEspacioPausa = NULL;
+    sonidoEspacioDespausa = NULL;
+    sonidoClickPoner = NULL;
+    sonidoClickQuitar = NULL;
+    sonidoC = NULL;
+    sonidoX = NULL;
 }

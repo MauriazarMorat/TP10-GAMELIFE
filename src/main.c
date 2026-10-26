@@ -132,6 +132,5 @@ int main (void)
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
 	limpiar_sonidos_front();
-    if (sonidoX) al_destroy_sample(sonidoX);
     return 0;
 }

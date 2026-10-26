@@ -1,9 +1,13 @@
 CC = gcc
+CFLAGS = -Wall -Wextra
 
-LIBS = $(shell pkg-config --cflags --libs allegro-5 allegro_primitives-5)
+SOURCES = src/main.c src/backend/backend.c src/frontend/frontend.c
+HEADERS = src/backend/backend.h src/frontend/frontend.h src/gameConstants.h
 
-juego.exe: src/main.c src/front.c src/front.h
-	$(CC) src/main.c src/front.c -o juego.exe $(LIBS)
+LIBS = $(shell pkg-config --cflags --libs allegro-5 allegro_primitives-5 allegro_font-5 allegro_ttf-5 allegro_image-5 allegro_audio-5 allegro_acodec-5)
+
+juego.exe: $(SOURCES) $(HEADERS)
+	$(CC) $(CFLAGS) $(SOURCES) -o juego.exe $(LIBS)
 
 run: juego.exe
 	./juego.exe
