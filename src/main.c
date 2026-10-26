@@ -30,10 +30,6 @@ int main (void)
     {
 		return -1; // Alguna inicilizacion grafica fallo.
 	}
-	else
-    {
-		printf("Se ha inicializado ALLEGRO correctamente.\n");
-	}
 
 	/* 
 	Mostramos la intro, la cual se trata de un homenaje a la iconica presentación 
@@ -41,6 +37,7 @@ int main (void)
 	La frase mostrada hace referencia Interplay, empresa detrás de los inicios franquicias como Fallout.
 	Finalmente el nombre del equipo mostrado, es el que usaremos para competir en la competencia IEEE EXTREME.
 	*/
+
 	if (!mostrar_intro())
 	{
 		return 0;
