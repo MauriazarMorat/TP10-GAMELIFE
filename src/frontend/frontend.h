@@ -4,7 +4,6 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
-
 #include "../backend/backend.h"
 #include "../gameConstants.h"
 
@@ -37,4 +36,8 @@ void manejar_timer(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus, double*nextGenCount
 
 // FRONT MOUSE
 void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus); // Funcion encargada de manejar el timer.
+
+// MOSTRAR INTRO
+int mostrar_intro(void);
+
 #endif

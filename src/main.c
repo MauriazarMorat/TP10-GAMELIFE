@@ -31,9 +31,13 @@ int main (void)
 	}
 	else
     {
-
 		printf("Se ha inicializado ALLEGRO correctamente.\n");
+	}
 
+	// Mostramos la intro
+	if (!mostrar_intro())
+	{
+		return 0;
 	}
 
 	// Creamos el event queue
@@ -52,6 +56,15 @@ int main (void)
 		return -1;
 	}
 
+	ALLEGRO_BITMAP *icono = al_load_bitmap("assets/icono.png");
+
+	if (icono)
+	{
+		al_set_display_icon(display, icono);
+		al_destroy_bitmap(icono);
+	}
+	
+	al_set_window_title(display, "Juego de la Vida");
 
 	// Configuramos eventos
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -86,12 +99,19 @@ int main (void)
     			manejar_mouse(ev, &gameStatus);
     			break;
     	}
-    	if(gameStatus.isHelp){
-			helpDraw(font, &gameStatus);
-    	}else	if (gameStatus.redraw /*&& al_is_event_queue_empty(event_queue)*/)
-        {
-    		mainDraw(font, &gameStatus);
-    	}
+    	if (gameStatus.redraw && al_is_event_queue_empty(event_queue))
+		{
+			if (gameStatus.isHelp)
+			{
+				helpDraw(font, &gameStatus);
+			}
+			else
+			{
+				mainDraw(font, &gameStatus);
+			}
+
+			gameStatus.redraw = false;
+		}
     }
     al_destroy_font(font);
     al_destroy_display(display);

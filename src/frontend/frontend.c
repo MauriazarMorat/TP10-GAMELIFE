@@ -4,10 +4,13 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
-
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "frontend.h"
 
 // ---------- PROTOTIPOS LOCALES ---------- //
+
 static void dibujarCelulas(GAME_STATUS *gameStatus); // Dibuja las todas las celulas del mundo.
 
 // ---------- FUNCIONES ---------- //
@@ -37,6 +40,26 @@ int init_front(void){
 	{
 	    fprintf(stderr, "Error al inicializar el font addon.\n");
 	    return 0;
+	}
+	if (!al_init_image_addon())
+	{
+		fprintf(stderr, "Error al inicializar el complemento de imagenes.\n");
+		return 0;
+	}
+	if (!al_install_audio())
+	{
+		fprintf(stderr, "Error al inicializar el audio.\n");
+		return 0;
+	}
+	if (!al_init_acodec_addon())
+	{
+		fprintf(stderr, "Error al inicializar los formatos de audio.\n");
+		return 0;
+	}
+	if (!al_reserve_samples(1))
+	{
+		fprintf(stderr, "Error al reservar espacio para sonidos.\n");
+		return 0;
 	}
 
 	return 1;
@@ -303,4 +326,139 @@ void helpDraw(ALLEGRO_FONT *font, GAME_STATUS *gameStatus){
                 	);
 
     al_flip_display();
+}
+
+int mostrar_intro(void)
+{
+	ALLEGRO_DISPLAY *ventana = al_create_display(INTRO_ANCHO, INTRO_ALTO);
+
+    if (!ventana)
+    {
+        return 0;
+    }
+
+	// Se cambia el titulo de la ventana y se carga el icono.
+    al_set_window_title(ventana, "Grupo 4");
+	ALLEGRO_BITMAP *icono = al_load_bitmap("assets/icono.png");
+	al_set_display_icon(ventana, icono);
+	al_destroy_bitmap(icono);
+
+	// Se cargan los assets.
+	ALLEGRO_BITMAP *logo = al_load_bitmap("assets/Godot_c_logo.png");
+	ALLEGRO_SAMPLE *musica = al_load_sample("assets/intro.wav");
+	ALLEGRO_EVENT_QUEUE *cola = al_create_event_queue();
+	ALLEGRO_TIMER *timer = al_create_timer(DELTA_TIME);
+
+	// Si falta un asset se cancela la intro.
+	if (!logo || !musica || !cola || !timer)
+	{
+		if (logo) al_destroy_bitmap(logo);
+		if (musica) al_destroy_sample(musica);
+		if (cola) al_destroy_event_queue(cola);
+		if (timer) al_destroy_timer(timer);
+
+		al_destroy_display(ventana);
+		return 0;
+	}
+
+	al_register_event_source(cola, al_get_display_event_source(ventana));
+	al_register_event_source(cola, al_get_timer_event_source(timer));
+	
+	// Se inicia la ventana en negro.
+	al_clear_to_color(al_map_rgb(0, 0, 0));
+	al_flip_display();
+
+	// Se inicia la musica
+	al_play_sample(
+		musica,
+		1.0,
+		0.0,
+		1.0,
+		ALLEGRO_PLAYMODE_ONCE,
+		NULL
+	);
+
+	// Guardamos el tiempo en el que inicio la musica y comenzamos el timer.
+	double inicio = al_get_time();
+	al_start_timer(timer);
+
+	ALLEGRO_EVENT evento; // Guarda el evento recibido de la cola.
+	int salir = 0;       // Indica cuándo terminar el bucle de la intro.
+	int continuar = 0;   // Indica si al terminar la intro debe abrirse el juego.
+
+	// Configuramos transparencia.
+	al_set_blender(
+		ALLEGRO_ADD,
+		ALLEGRO_ONE,
+		ALLEGRO_INVERSE_ALPHA
+	);
+
+	while (salir == 0)
+	{
+		al_wait_for_event(cola, &evento);
+
+		// Si se presiona la X se cierra la ventana y no se abre el juego.
+		if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		{
+			salir = 1;
+		}
+		else if (evento.type == ALLEGRO_EVENT_TIMER)
+		{
+			// Calcula los segundos transcurridos tras iniciar la intro.
+			double tiempo = al_get_time() - inicio;
+
+			// Si el tiempo es mayor a la duración de la intro, se cierra la ventana y se setea el flag para abrir el juego.
+			if (tiempo >= DURACION_TOTAL)
+			{
+				continuar = 1;
+				salir = 1;
+			}
+			else if (al_is_event_queue_empty(cola))
+			{
+				float oscuridad = 0.0;
+
+				// Durante el fade in, la oscuridad baja de 1 a 0.
+				if (tiempo < DURACION_FADE_IN)
+				{
+					oscuridad = 1.0 - tiempo / DURACION_FADE_IN;
+				}
+				// Durante el fade out, la oscuridad sube de 0 a 1.
+				else if (tiempo >= DURACION_FADE_IN + DURACION_VISIBLE)
+				{
+					oscuridad = 1.0 - (DURACION_TOTAL - tiempo) / DURACION_FADE_OUT;
+				}
+
+				al_clear_to_color(al_map_rgb(0, 0, 0));
+
+				// Dibuja el logo ajustado al tamaño de la ventana.
+				al_draw_scaled_bitmap(
+					logo,
+					0, 0,
+					al_get_bitmap_width(logo),
+					al_get_bitmap_height(logo),
+					0, 0,
+					INTRO_ANCHO, INTRO_ALTO,
+					0
+				);
+
+				// Cubre el logo con una rectangulo negro de opacidad variable.
+				al_draw_filled_rectangle(
+					0, 0, INTRO_ANCHO, INTRO_ALTO,
+					al_map_rgba_f(0, 0, 0, oscuridad)
+				);
+
+				al_flip_display();
+			}
+		}
+	}
+
+	al_stop_samples();
+
+	al_destroy_sample(musica);
+	al_destroy_timer(timer);
+	al_destroy_event_queue(cola);
+	al_destroy_bitmap(logo);
+	al_destroy_display(ventana);
+
+	return continuar;
 }

@@ -16,6 +16,13 @@
 
 #define BACKGROUND_COLOR al_map_rgb(60, 62, 66)
 
+#define INTRO_ANCHO 600
+#define INTRO_ALTO 400
+#define DURACION_FADE_IN 4.0
+#define DURACION_VISIBLE 2.0
+#define DURACION_FADE_OUT 5.0
+#define DURACION_TOTAL (DURACION_FADE_IN + DURACION_VISIBLE + DURACION_FADE_OUT)
+
 typedef struct gameStatus{
 	uint8_t isRunning : 1;
 	uint8_t isEditing : 1;
