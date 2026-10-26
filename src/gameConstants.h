@@ -14,8 +14,14 @@
 #define C_alto  50 // Cuantas celulas de alto
 #define C_ancho 50 // Cuantas celulas de largo
 
-#define BACKGROUND_COLOR al_map_rgb(60, 62, 66)
+// Constantes colores.
+#define BACKGROUND_COLOR al_map_rgb(24, 27, 33)
+#define BACKGROUND_COLOR al_map_rgb(24, 27, 33)
+#define COLOR_CELULA_MUERTA al_map_rgb(39, 44, 52)
+#define COLOR_CELULA_VIVA al_map_rgb(80, 220, 150)
+#define COLOR_TEXTO al_map_rgb(230, 233, 238)
 
+// Constantes intro.
 #define INTRO_ANCHO 600
 #define INTRO_ALTO 400
 #define DURACION_FADE_IN 4.0

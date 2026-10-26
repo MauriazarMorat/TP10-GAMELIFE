@@ -80,10 +80,10 @@ static void dibujarCelulas(GAME_STATUS *gameStatus)
 		{
 			if (gameStatus->world[y][x]) // Si la celula esta viva, el color del rectangulo a imprimir sera blanco
 			{
-				color = al_map_rgb(0,0,0);
+				color = COLOR_CELULA_VIVA;
 			} else
 			{
-				color = al_map_rgb(255,255,255); // Si la celula esta muerta, el color del rectangulo a imprimir sera negro.
+				color = COLOR_CELULA_MUERTA; // Si la celula esta muerta, el color del rectangulo a imprimir sera negro.
 			}
 			// Dibujamos celula, se viva o muerta.
 			al_draw_filled_rectangle(cursorX, cursorY, cursorX+CELL_SIZE, cursorY+CELL_SIZE, color);
@@ -101,7 +101,7 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 	dibujarCelulas(gameStatus);
 
 	// escribimos el texto debajo del mapa del juego.
-	al_draw_textf(font,al_map_rgb(255, 255, 255),
+	al_draw_textf(font,COLOR_TEXTO,
 	PantallaMargin,
 					largo-10,                   // Coordenadas X e Y en pantalla
 	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d Tiempo: %0.0f%%",
