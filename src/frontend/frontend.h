@@ -9,7 +9,7 @@
 #include "../backend/backend.h"
 #include "../gameConstants.h"
 
-#define CELL_SIZE 14// Pixeles de ancho de cada celula
+#define CELL_SIZE 13// Pixeles de ancho de cada celula
 #define CELL_MARGIN 4 // Margen de pixeles de cada celula
 #define PantallaMargin 20 // Pixeles de margen
 #define PantallaTextMargin 50 // Pixeles inferiores de margen
