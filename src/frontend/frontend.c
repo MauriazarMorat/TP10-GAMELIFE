@@ -10,6 +10,19 @@
 #include <allegro5/allegro_acodec.h>
 #include "frontend.h"
 
+// ----------- SONIDOS ---------- //
+
+ALLEGRO_SAMPLE *sonidoH = NULL;
+ALLEGRO_SAMPLE *sonidoR = NULL;
+ALLEGRO_SAMPLE *sonidoRight = NULL;
+ALLEGRO_SAMPLE *sonidoLeft = NULL;
+ALLEGRO_SAMPLE *sonidoEspacioPausa = NULL;
+ALLEGRO_SAMPLE *sonidoEspacioDespausa = NULL;
+ALLEGRO_SAMPLE *sonidoClickPoner = NULL;
+ALLEGRO_SAMPLE *sonidoClickQuitar = NULL;
+ALLEGRO_SAMPLE *sonidoC = NULL;
+ALLEGRO_SAMPLE *sonidoX = NULL;
+
 // ---------- PROTOTIPOS LOCALES ---------- //
 
 static void dibujarCelulas(GAME_STATUS *gameStatus); // Dibuja las todas las celulas del mundo.
@@ -57,7 +70,7 @@ int init_front(void){
 		fprintf(stderr, "Error al inicializar los formatos de audio.\n");
 		return 0;
 	}
-	if (!al_reserve_samples(1))
+	if (!al_reserve_samples(11))
 	{
 		fprintf(stderr, "Error al reservar espacio para sonidos.\n");
 		return 0;
@@ -67,6 +80,18 @@ int init_front(void){
 		fprintf(stderr, "Error al inicializar las fuentes TTF.\n");
 		return 0;
 	}
+
+	// Cargamos efectos de sonido.
+	sonidoH = al_load_sample("assets/sonidoH.ogg");
+	sonidoR = al_load_sample("assets/sonidoR.ogg");
+	sonidoRight = al_load_sample("assets/sonidoRight.ogg");
+	sonidoLeft = al_load_sample("assets/sonidoLeft.ogg");
+	sonidoEspacioPausa = al_load_sample("assets/sonidoEspacioPausa.wav");
+	sonidoEspacioDespausa = al_load_sample("assets/sonidoEspacioDespausa.wav");
+	sonidoClickPoner = al_load_sample("assets/sonidoClickPoner.wav");
+	sonidoClickQuitar = al_load_sample("assets/sonidoClickQuitar.wav");
+	sonidoC = al_load_sample("assets/sonidoC.wav");
+	sonidoX = al_load_sample("assets/sonidoX.wav");
 
 	return 1;
 }
@@ -110,7 +135,7 @@ void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus)
 	al_draw_textf(font,COLOR_TEXTO,
 	PantallaMargin,
 					largo-10,                   // Coordenadas X e Y en pantalla
-	            0,"Pulse H para ayuda, Generacion actual: %d Esta pausado?: %d Velocidad: %0.0f%%",
+	            0,"Pulse H para ayuda, Generacion actual: %d Pausado?: %d Velocidad: %0.0f%%",
 				gameStatus->generacion,
 				gameStatus->isPaused,
 				MEDIAVELOCIDAD*(MIN_VEL-gameStatus->umbralNextGen)
@@ -155,16 +180,32 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 	switch(ev.keyboard.keycode)
 	{
 		case ALLEGRO_KEY_BACKSPACE: // Shortcut para cerrar programa.
+			if (sonidoX) {
+				al_play_sample(sonidoX, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
+			al_rest(0.5); // Pausa breve para que el sonido termine antes de destruir la ventana
 			gameStatus->isRunning = false;
 			break;
+
 		case ALLEGRO_KEY_T: // Tecla para avanzar una generacion.
+			if (sonidoH) {
+				al_play_sample(sonidoH, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			siguiente_generacion(gameStatus->world, &(gameStatus->generacion));
 			gameStatus->redraw = true;
 			break;
+
 		case ALLEGRO_KEY_SPACE: // Seteamos el flag si se ha pausado el juego.
 			gameStatus->isPaused = !(gameStatus->isPaused);
 			gameStatus->isHelp = 0;
 
+			if (gameStatus->isPaused) 
+			{
+				if (sonidoEspacioPausa) al_play_sample(sonidoEspacioPausa, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			} else 
+			{
+				if (sonidoEspacioDespausa) al_play_sample(sonidoEspacioDespausa, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			// Si se dan estas condiciones muy probablemente se haya editado el mundo.
 			if(gameStatus->generacion == 0 && !(gameStatus->isPaused)){
 				copiar_mundo(gameStatus->auxWorld, gameStatus->world);
@@ -172,16 +213,25 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 
 			gameStatus->redraw = true;
 			break;
+
 		case ALLEGRO_KEY_R: // Funcion para volver la generacion cero del programa.
+			if (sonidoR) 
+			{
+				al_play_sample(sonidoR, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			gameStatus->isPaused = true;
 			gameStatus->generacion = 0;
 
 			copiar_mundo(gameStatus->world, gameStatus->auxWorld);
 
-
 			gameStatus->redraw = true;
 			break;
+
 		case ALLEGRO_KEY_C: // Funcion para volver la generacion cero del programa y borrando todas la celulas.
+			if (sonidoC) 
+			{
+				al_play_sample(sonidoC, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			gameStatus->isPaused = true;
 			gameStatus->generacion = 0;
 
@@ -191,6 +241,9 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			break;
 
 		case ALLEGRO_KEY_H: //Funcion para poner el modo de ayuda
+			if (sonidoH) {
+				al_play_sample(sonidoH, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			if(!gameStatus->isHelp){
 				gameStatus->isHelp = true;
 				gameStatus->isPaused = true;
@@ -201,6 +254,9 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			break;
 
 		case ALLEGRO_KEY_RIGHT: //Funcion para subir la velocidad hasta 0.00
+			if (sonidoRight) {
+				al_play_sample(sonidoRight, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			gameStatus->umbralNextGen -= CAMBIO_DE_VELOCIDAD;
 			if(gameStatus->umbralNextGen<=CAMBIO_DE_VELOCIDAD){
 				gameStatus->umbralNextGen = CAMBIO_DE_VELOCIDAD; //Topeamos el valor para que despues comienze.
@@ -208,7 +264,9 @@ void manejar_teclado(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus)
 			break;
 
 		case ALLEGRO_KEY_LEFT: //funcion para bajar la velocidad hasta 1.00
-
+			if (sonidoLeft) {
+				al_play_sample(sonidoLeft, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			gameStatus->umbralNextGen += CAMBIO_DE_VELOCIDAD; //Sumamos un nivel de velocidad
 			if(gameStatus->umbralNextGen>=MIN_VEL){
 				gameStatus->umbralNextGen = MIN_VEL-CAMBIO_DE_VELOCIDAD; //Topeamos el valor para que despues comienze.
@@ -256,6 +314,15 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus){
 	if((posCell.x != -1 && posCell.y != -1)&&!(gameStatus->isHelp)){
 		// Si lo es, entonces a la posicion del mundo asignamos el estado de vida de una celula.
 	    gameStatus->world[posCell.x][posCell.y] = !(gameStatus->world[posCell.x][posCell.y]);
+
+
+		if (gameStatus->world[posCell.x][posCell.y] == 1) 
+		{
+			if (sonidoClickPoner) al_play_sample(sonidoClickPoner, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+		} else 
+		{
+			if (sonidoClickQuitar) al_play_sample(sonidoClickQuitar, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+		}
 
 	    gameStatus->generacion = 0;
 	    gameStatus->isPaused = true;
@@ -495,4 +562,16 @@ int mostrar_intro(void)
 	al_destroy_display(ventana);
 
 	return continuar;
+}
+
+void limpiar_sonidos_front(void) {
+    if (sonidoH) al_destroy_sample(sonidoH);
+    if (sonidoR) al_destroy_sample(sonidoR);
+    if (sonidoRight) al_destroy_sample(sonidoRight);
+    if (sonidoLeft) al_destroy_sample(sonidoLeft);
+    if (sonidoEspacioPausa) al_destroy_sample(sonidoEspacioPausa);
+    if (sonidoEspacioDespausa) al_destroy_sample(sonidoEspacioDespausa);
+    if (sonidoClickPoner) al_destroy_sample(sonidoClickPoner);
+    if (sonidoClickQuitar) al_destroy_sample(sonidoClickQuitar);
+    if (sonidoC) al_destroy_sample(sonidoC);
 }

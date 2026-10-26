@@ -16,7 +16,6 @@
 
 // Constantes colores.
 #define BACKGROUND_COLOR al_map_rgb(24, 27, 33)
-#define BACKGROUND_COLOR al_map_rgb(24, 27, 33)
 #define COLOR_CELULA_MUERTA al_map_rgb(39, 44, 52)
 #define COLOR_CELULA_VIVA al_map_rgb(80, 220, 150)
 #define COLOR_TEXTO al_map_rgb(230, 233, 238)

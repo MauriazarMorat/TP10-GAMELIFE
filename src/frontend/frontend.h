@@ -16,6 +16,8 @@
 #define alto C_alto*CELL_SIZE + (C_alto-1)*CELL_MARGIN + 2*PantallaMargin + PantallaTextMargin // Alto total de pantalla
 #define largo C_ancho*CELL_SIZE + (C_ancho-1)*CELL_MARGIN + 2*PantallaMargin // Ancho total de pantalla.
 
+extern ALLEGRO_SAMPLE *sonidoX; // Declaramos el sonido de cerrar como variable global para que main pueda reproducirlo.
+
 typedef struct {
 	int x;
 	int y;
@@ -24,7 +26,6 @@ typedef struct {
 int init_front(void); // Inicializa todos lo necesario del front.
 
 // FRONT GRAFICO
-
 void mainDraw(ALLEGRO_FONT *font, GAME_STATUS * gameStatus); // Ejecuta el buffer principal de dibujo.
 void pixelCoordToWorldCoord(int posX, int posY, position_t * worldPos); // Devuelve la posicion del mundo dada un posicion pixel.
 void helpDraw(ALLEGRO_FONT *font,GAME_STATUS * gameStatusS);
@@ -40,5 +41,8 @@ void manejar_mouse(ALLEGRO_EVENT ev, GAME_STATUS*gameStatus); // Funcion encarga
 
 // MOSTRAR INTRO
 int mostrar_intro(void);
+
+// LIMPIAR SONIDOS
+void limpiar_sonidos_front(void);
 
 #endif

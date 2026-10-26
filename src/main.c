@@ -4,6 +4,7 @@
 #include "backend/backend.h"
 #include "frontend/frontend.h"
 #include "stdbool.h"
+#include <allegro5/allegro_audio.h>
 
 // ------------ MAIN ------------- //
 
@@ -96,6 +97,10 @@ int main (void)
     	switch(ev.type)
     	{
     		case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				if (sonidoX) {
+        			al_play_sample(sonidoX, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        			al_rest(0.5); // Pausa breve para que el sonido termine antes de destruir la ventana
+    			}	
     			gameStatus.isRunning = false;
     			break;
     		case ALLEGRO_EVENT_TIMER:
@@ -126,5 +131,7 @@ int main (void)
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
+	limpiar_sonidos_front();
+    if (sonidoX) al_destroy_sample(sonidoX);
     return 0;
 }
